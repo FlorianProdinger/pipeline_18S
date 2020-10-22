@@ -54,28 +54,18 @@ eval `/usr/bin/modulecmd tcsh load Python/3.6.5`
 
 ########## PIPELINE STARTS ##########
 
-#  0  MANIFEST > better to create manually
-#This script calls a python function to create the "manifest" in the output directory 
-#not necessary if manually created
-#this script has to be in the same dir as the pipeline
-#set PYTHON_SCRIPT="/lustre1/aptmp/florian/uranouchi/18S_uranouchi/UU_euk-18S/qiime/pipeline_commands/command_0_manifest_maker.py"
-#in the INPUT_DIR are all fastq or fasta files that should be analyzed. A script generates a manifest using the files in this dir.
-#set INPUT_DIR="/lustre1/aptmp/florian/uranouchi/18S_uranouchi/UU_euk-18S/fastq_files/"
-#echo "creating '$MANIFEST' using python"
-#python $PYTHON_SCRIPT $INPUT_DIR $OUT_DIR $MANIFEST
 
+##  1  IMPORT
+#This script imports the files specified in the "manifest" 
+#echo "import using $MANIFEST"
+qiime tools import \
+--type 'SampleData[PairedEndSequencesWithQuality]' \
+--input-path ${OUT_DIR}$MANIFEST \
+--output-path ${OUT_DIR}out1-import.qza \
+--input-format PairedEndFastqManifestPhred33
 
-###  1  IMPORT
-##This script imports the files specified in the "manifest" 
-##echo "import using $MANIFEST"
-#qiime tools import \
-#--type 'SampleData[PairedEndSequencesWithQuality]' \
-#--input-path ${OUT_DIR}$MANIFEST \
-#--output-path ${OUT_DIR}out1-import.qza \
-#--input-format PairedEndFastqManifestPhred33
-
-#### DADA2 replaces:
-# 2  PRIMER REMOVAL
+#### DADA2 includes: 
+# 2  PRIMER REMOVAL !!!check if length is okay!!!
 # 3  MERGING
 # 4  QUALITY FILTER
 # 5  DEREPLICATION
@@ -94,36 +84,36 @@ qiime dada2 denoise-paired \
 
 
 
-## 6
-################ SILVA IMPORT ################
-#echo "SILVA Sequence and taxonomy import"
-#
-##6.1) importing 97% sequence data
-#set SILVA_FILE_SEQ_97="/lustre1/aptmp/florian/uranouchi/18S_uranouchi/UU_euk-18S/qiime/Silva/SILVA_132_QIIME_release/rep_set/rep_set_18S_only/97/silva_132_97_18S.fna"
-#qiime tools import --type 'FeatureData[Sequence]' \
-#--input-path $SILVA_FILE_SEQ_97  \
-#--output-path ${OUT_DIR}out6.1-silva_sequence_0.97_18Sonly.qza
-#
-##6.2) import 97% taxonomy data
-#set SILVA_FILE_97="/lustre1/aptmp/florian/uranouchi/18S_uranouchi/UU_euk-18S/qiime/Silva/SILVA_132_QIIME_release/taxonomy/18S_only/97/majority_taxonomy_all_levels.txt"
-#qiime tools import  --type 'FeatureData[Taxonomy]' \
-#--input-path $SILVA_FILE_97 \
-#--input-format HeaderlessTSVTaxonomyFormat \
-#--output-path ${OUT_DIR}out6.2-silva_0.97_taxonomy_majority_out.qza.qza
-#
-##6.3) importing 99% sequence data
-#set SILVA_FILE_SEQ_99="/lustre1/aptmp/florian/uranouchi/18S_uranouchi/UU_euk-18S/qiime/Silva/SILVA_132_QIIME_release/rep_set/rep_set_18S_only/99/silva_132_99_18S.fna"
-#qiime tools import --type 'FeatureData[Sequence]' \
-#--input-path $SILVA_FILE_SEQ_99  \
-#--output-path ${OUT_DIR}out6.1-silva_sequence_0.99_18Sonly.qza
-#
-##6.4) import 99% taxonomy data
-#set SILVA_FILE_99="/lustre1/aptmp/florian/uranouchi/18S_uranouchi/UU_euk-18S/qiime/Silva/SILVA_132_QIIME_release/taxonomy/18S_only/99/majority_taxonomy_all_levels.txt"
-#qiime tools import  --type 'FeatureData[Taxonomy]' \
-#--input-path $SILVA_FILE_99 \
-#--input-format HeaderlessTSVTaxonomyFormat \
-#--output-path ${OUT_DIR}out6.2-silva_0.99_taxonomy_majority_out.qza.qza
-################### SILVA IMPORT ################
+# 6
+############### SILVA IMPORT ################
+echo "SILVA Sequence and taxonomy import"
+
+#6.1) importing 97% sequence data
+set SILVA_FILE_SEQ_97="/lustre1/aptmp/florian/uranouchi/18S_uranouchi/UU_euk-18S/qiime/Silva/SILVA_132_QIIME_release/rep_set/rep_set_18S_only/97/silva_132_97_18S.fna"
+qiime tools import --type 'FeatureData[Sequence]' \
+--input-path $SILVA_FILE_SEQ_97  \
+--output-path ${OUT_DIR}out6.1-silva_sequence_0.97_18Sonly.qza
+
+#6.2) import 97% taxonomy data
+set SILVA_FILE_97="/lustre1/aptmp/florian/uranouchi/18S_uranouchi/UU_euk-18S/qiime/Silva/SILVA_132_QIIME_release/taxonomy/18S_only/97/majority_taxonomy_all_levels.txt"
+qiime tools import  --type 'FeatureData[Taxonomy]' \
+--input-path $SILVA_FILE_97 \
+--input-format HeaderlessTSVTaxonomyFormat \
+--output-path ${OUT_DIR}out6.2-silva_0.97_taxonomy_majority_out.qza.qza
+
+#6.3) importing 99% sequence data
+set SILVA_FILE_SEQ_99="/lustre1/aptmp/florian/uranouchi/18S_uranouchi/UU_euk-18S/qiime/Silva/SILVA_132_QIIME_release/rep_set/rep_set_18S_only/99/silva_132_99_18S.fna"
+qiime tools import --type 'FeatureData[Sequence]' \
+--input-path $SILVA_FILE_SEQ_99  \
+--output-path ${OUT_DIR}out6.1-silva_sequence_0.99_18Sonly.qza
+
+#6.4) import 99% taxonomy data
+set SILVA_FILE_99="/lustre1/aptmp/florian/uranouchi/18S_uranouchi/UU_euk-18S/qiime/Silva/SILVA_132_QIIME_release/taxonomy/18S_only/99/majority_taxonomy_all_levels.txt"
+qiime tools import  --type 'FeatureData[Taxonomy]' \
+--input-path $SILVA_FILE_99 \
+--input-format HeaderlessTSVTaxonomyFormat \
+--output-path ${OUT_DIR}out6.2-silva_0.99_taxonomy_majority_out.qza.qza
+################## SILVA IMPORT ################
 
 
 # 8.3) tree generation

@@ -5,7 +5,7 @@ I found it difficult to setup the metadata sheet and the qiime manifest. Feel fr
 
 It can be used with and without the qsub system, but QIIME2 and R need to be installed.
 
-If you want to use the pipeline yourself keep in mind that the following varibels need to be changed:
+If you want to use the pipeline yourself keep in mind that the following variabels need to be changed:
 - ```OUT_DIR```
 - ```MANIFEST```
 - ```METADATA_FILE```
